@@ -1,25 +1,53 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import React from "react";
+import Form from "./components/Form";
+import TodoList from "./components/TodoList";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+let id = 0;
+let getId = () => ++id;
+
+const initialTodos = [
+  { id: getId(), name: "Walk the dog", completed: false },
+  { id: getId(), name: "Learn React", completed: true },
+  { id: getId(), name: "Have Fun", completed: false },
+];
+
+export default class App extends React.Component {
+  state = {
+    todos: initialTodos,
+  };
+
+  addTodo = (name) => {
+    this.setState({
+      ...this.state,
+      todos: this.state.todos.concat({ id: getId(), name, completed: false }),
+    });
+  };
+
+  toggleCompletion = (id) => {
+    this.setState({
+      ...this.state,
+      todos: this.state.todos.map((td) => {
+        if (id === td.id) return { ...td, completed: !td.completed };
+        return td;
+      }),
+    });
+  };
+
+  render() {
+    return (
+      <div className="App">
+        <div>
+          <h1>My Todos</h1>
+        </div>
+        <div>
+          <TodoList
+            todos={this.state.todos}
+            toggleCompletion={this.toggleCompletion}
+          />
+          <Form addTodo={this.addTodo} />
+        </div>
+      </div>
+    );
+  }
 }
-
-export default App;
